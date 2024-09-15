@@ -32,6 +32,7 @@ class _GamePageState extends State<GamePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
+            // debug purpose text widget
             Text(inputWord),
             Column(
               children: getWordRows(screenWidth),
@@ -176,8 +177,7 @@ class _GamePageState extends State<GamePage> {
         currentRow++;
         if(inputWord == widget.word){
           _showGameWonPopup(screenWidth);
-        }
-        if(currentRow>wordRows.length-1){
+        } else if(currentRow>wordRows.length-1){
           _showGameOverPopup(screenWidth);
         }
         inputWord = '';
