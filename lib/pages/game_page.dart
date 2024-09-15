@@ -1,7 +1,10 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:wordle/components/action_button.dart';
 import 'package:wordle/components/letter_box.dart';
 import '../components/key_button.dart';
+import '../utils/words_list.dart';
 
 class GamePage extends StatefulWidget {
   final String word;
@@ -15,6 +18,7 @@ class _GamePageState extends State<GamePage> {
   String inputWord = '';
   int currentRow = 0;
   List<String> wordRows = ['', '', '', '', ''];
+  Random random = Random();
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -33,7 +37,7 @@ class _GamePageState extends State<GamePage> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             // debug purpose text widget
-            Text(inputWord),
+            Text('${widget.word}  $inputWord'),
             Column(
               children: getWordRows(screenWidth),
             ),
@@ -227,7 +231,7 @@ class _GamePageState extends State<GamePage> {
                         Navigator.pop(context);
                         Navigator.pop(context);
                         Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => const GamePage(word: 'SHAIKH')));
+                            MaterialPageRoute(builder: (context) => GamePage(word: words[random.nextInt(words.length)].toUpperCase())));
                       },
                       child: Image(
                         image: const AssetImage('assets/components/play_again.png'),
@@ -290,7 +294,7 @@ class _GamePageState extends State<GamePage> {
                         Navigator.pop(context);
                         Navigator.pop(context);
                         Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => const GamePage(word: "SHAIKH")));
+                            MaterialPageRoute(builder: (context) => GamePage(word: words[random.nextInt(words.length)].toUpperCase())));
                       },
                       child: Image(
                         image: const AssetImage('assets/components/play_again.png'),
