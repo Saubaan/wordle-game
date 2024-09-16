@@ -31,7 +31,7 @@ class _GamePageState extends State<GamePage> {
         backgroundColor: Colors.orange.shade600,
         foregroundColor: Colors.white,
         centerTitle: true,
-        title: const Text("Wordle"),
+        title: const Text("Wordle", style: TextStyle(fontFamily: 'RetroGame',fontSize: 30),),
       ),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
@@ -100,26 +100,31 @@ class _GamePageState extends State<GamePage> {
     } else {
       List<String> charList = widget.word.split('');
       for (int i = 0; i < 6; i++) {
-        letterBoxes.add(LetterBox(
-          letter: inputWord[i],
-        ));
-      }
-      for (int i = 0; i < 6; i++) {
-        if(letterBoxes[i].letter == widget.word[i]){
-          letterBoxes[i].color = Colors.green;
-          charList.remove(letterBoxes[i].letter);
+        if(inputWord[i] == widget.word[i]) {
+          charList.remove(inputWord[i]);
         }
       }
       for (int i = 0; i < 6; i++) {
-        if(letterBoxes[i].letter != widget.word[i] && charList.contains(letterBoxes[i].letter)){
-          letterBoxes[i].color = Colors.orange;
-          charList.remove(letterBoxes[i].letter);
+        if(inputWord[i] == widget.word[i]){
+          letterBoxes.add(LetterBox(
+            letter: inputWord[i],
+            color: Colors.green,
+          ));
         }
-        else if(letterBoxes[i].letter != widget.word[i]){
-          letterBoxes[i].color = Colors.grey.shade500;
+        else if(charList.contains(inputWord[i])){
+          letterBoxes.add(LetterBox(
+            letter: inputWord[i],
+            color: Colors.orange,
+          ));
+          charList.remove(inputWord[i]);
+        }
+        else {
+          letterBoxes.add(LetterBox(
+            letter: inputWord[i],
+            color: Colors.grey,
+          ));
         }
       }
-
     }
     return Row(
       children: letterBoxes,
