@@ -2,9 +2,10 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:wordle/components/action_button.dart';
+import 'package:wordle/components/game_over_popup.dart';
+import 'package:wordle/components/game_won_popup.dart';
 import 'package:wordle/components/letter_box.dart';
-import '../components/key_button.dart';
-import '../utils/words_list.dart';
+import 'package:wordle/components/key_button.dart';
 
 class GamePage extends StatefulWidget {
   final String word;
@@ -98,30 +99,26 @@ class _GamePageState extends State<GamePage> {
     } else {
       List<String> charList = widget.word.split('');
       for (int i = 0; i < 6; i++) {
-        if (charList.contains(inputWord[i])) {
-          if (widget.word[i] == inputWord[i]) {
-            letterBoxes.add(LetterBox(
-              letter: inputWord[i],
-              color: Colors.green,
-              textColor: Colors.white,
-            ));
-            charList.remove(inputWord[i]);
-          } else {
-            letterBoxes.add(LetterBox(
-              letter: inputWord[i],
-              color: Colors.orange,
-              textColor: Colors.white,
-            ));
-            charList.remove(inputWord[i]);
-          }
-        } else {
-          letterBoxes.add(LetterBox(
-            letter: inputWord[i],
-            color: Colors.grey.shade500,
-            textColor: Colors.white,
-          ));
+        letterBoxes.add(LetterBox(
+          letter: inputWord[i],
+        ));
+      }
+      for (int i = 0; i < 6; i++) {
+        if(letterBoxes[i].letter == widget.word[i]){
+          letterBoxes[i].color = Colors.green;
+          charList.remove(letterBoxes[i].letter);
         }
       }
+      for (int i = 0; i < 6; i++) {
+        if(letterBoxes[i].letter != widget.word[i] && charList.contains(letterBoxes[i].letter)){
+          letterBoxes[i].color = Colors.orange;
+          charList.remove(letterBoxes[i].letter);
+        }
+        else if(letterBoxes[i].letter != widget.word[i]){
+          letterBoxes[i].color = Colors.grey.shade500;
+        }
+      }
+
     }
     return Row(
       children: letterBoxes,
@@ -180,134 +177,31 @@ class _GamePageState extends State<GamePage> {
         wordRows[currentRow] = inputWord;
         currentRow++;
         if(inputWord == widget.word){
-          _showGameWonPopup(screenWidth);
+          _showGameWonPopup();
         } else if(currentRow>wordRows.length-1){
-          _showGameOverPopup(screenWidth);
+          _showGameOverPopup();
         }
         inputWord = '';
       });
     }
   }
 
-  void _showGameWonPopup(double screenWidth) {
+  void _showGameWonPopup() {
     showDialog(
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        return Center(
-          child: PopScope(
-            canPop: false,
-            child: AlertDialog(
-              title: Image(
-                image: const AssetImage('assets/components/game_won.png'),
-                height: screenWidth/2.75,
-              ),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    'The word was ${widget.word}',
-                    style: TextStyle(
-                        fontSize: screenWidth/20, fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    'Hurray!',
-                    style: TextStyle(fontSize: screenWidth/18,),
-                  ),
-                  Text(
-                    'You Guessed it right!',
-                    style: TextStyle(
-                      fontSize: screenWidth/20,
-                    ),
-                  ),
-                ],
-              ),
-              actions: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        Navigator.pop(context);
-                        Navigator.pop(context);
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => GamePage(word: words[random.nextInt(words.length)].toUpperCase())));
-                      },
-                      child: Image(
-                        image: const AssetImage('assets/components/play_again.png'),
-                        height: screenWidth/12,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        );
+        return GameWonPopUp(word: widget.word);
       },
     );
   }
 
-  void _showGameOverPopup(double screenWidth) {
+  void _showGameOverPopup() {
     showDialog(
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        return Center(
-          child: PopScope(
-            canPop: false,
-            child: AlertDialog(
-              title: const Image(
-                image: AssetImage('assets/components/game_over.png'),
-              ),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    'The word was',
-                    style: TextStyle(
-                      fontSize: screenWidth/20,
-                    ),
-                  ),
-                  Text(
-                    widget.word,
-                    style: TextStyle(fontSize: screenWidth/18, fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
-              actions: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        Navigator.pop(context);
-                        Navigator.pop(context);
-                      },
-                      child: Image(
-                        image: const AssetImage('assets/components/home.png'),
-                        height: screenWidth/12,
-                      ),
-                    ),
-                    InkWell(
-                      onTap: () {
-                        Navigator.pop(context);
-                        Navigator.pop(context);
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => GamePage(word: words[random.nextInt(words.length)].toUpperCase())));
-                      },
-                      child: Image(
-                        image: const AssetImage('assets/components/play_again.png'),
-                        height: screenWidth/12,
-                      ),
-                    ),
-                  ],
-                ),
-
-              ],
-            ),
-          ),
-        );
+        return GameOverPopUp(word: widget.word);
       },
     );
   }

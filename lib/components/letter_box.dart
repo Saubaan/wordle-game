@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 class LetterBox extends StatelessWidget {
   final String letter;
-  final Color? color;
+  Color? color;
   final Color? borderColor;
   final Color? textColor;
-  const LetterBox(
+  LetterBox(
       {super.key,
       required this.letter,
       this.color,
