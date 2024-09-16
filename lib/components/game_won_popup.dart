@@ -32,10 +32,6 @@ class GameWonPopUp extends StatelessWidget {
                     fontSize: screenWidth/20, fontWeight: FontWeight.bold),
               ),
               Text(
-                'Hurray!',
-                style: TextStyle(fontSize: screenWidth/18,),
-              ),
-              Text(
                 'You Guessed it right!',
                 style: TextStyle(
                   fontSize: screenWidth/20,
@@ -45,7 +41,7 @@ class GameWonPopUp extends StatelessWidget {
           ),
           actions: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 InkWell(
                   onTap: () {
