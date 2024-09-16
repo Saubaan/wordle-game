@@ -20,6 +20,7 @@ class _GamePageState extends State<GamePage> {
   int currentRow = 0;
   List<String> wordRows = ['', '', '', '', ''];
   Random random = Random();
+  List<String> usedLetters = [];
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -146,6 +147,8 @@ class _GamePageState extends State<GamePage> {
           .map((alphabet) => Padding(
                 padding: EdgeInsets.all(screenWidth / 240),
                 child: KeyButton(
+                  isUsed: usedLetters.contains(alphabet),
+                  isCorrect: widget.word.contains(alphabet),
                   alphabet: alphabet,
                   pushAlphabet: pushAlphabet,
                   size: boxSize,
@@ -174,6 +177,9 @@ class _GamePageState extends State<GamePage> {
   void enterWord(double screenWidth) {
     if(inputWord.length == 6 && currentRow < wordRows.length){
       setState(() {
+        for(int i = 0; i<inputWord.length; i++){
+          usedLetters.add(inputWord[i]);
+        }
         wordRows[currentRow] = inputWord;
         currentRow++;
         if(inputWord == widget.word){
