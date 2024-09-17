@@ -1,16 +1,11 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:wordle/pages/game_page.dart';
-import 'package:wordle/utils/words_list.dart';
+import 'package:wordle/pages/home_page.dart';
 
 void main() {
-  Random random = Random();
-  String word = words[random.nextInt(words.length)].toUpperCase();
-  int duration = 60;
   runApp(
-    MaterialApp(
+    const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: GamePage(word: word, duration: duration,),
+      home: HomePage(),
     ),
   );
 }

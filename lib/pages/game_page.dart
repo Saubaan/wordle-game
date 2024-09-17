@@ -27,13 +27,11 @@ class _GamePageState extends State<GamePage> {
   final CountDownController countDownController = CountDownController();
   bool isRunning = false;
   @override
-
-
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     final keySize = screenWidth / 11.6;
-    if(inputWord.isNotEmpty && !isRunning){
+    if (widget.duration != 0 && inputWord.isNotEmpty && !isRunning) {
       countDownController.start();
       isRunning = true;
     }
@@ -54,30 +52,32 @@ class _GamePageState extends State<GamePage> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             // debug purpose text widget
-            Text('${widget.word}  $inputWord'),
+            // Text('${widget.word}  $inputWord'),
             // timer
-            CircularCountDownTimer(
-              duration: widget.duration,
-              controller: countDownController,
-              width: screenWidth / 8,
-              height: screenHeight /15,
-              ringColor: Colors.grey[300]!,
-              fillColor: Colors.orangeAccent,
-              backgroundColor: Colors.white54,
-              textStyle: TextStyle(
-                fontSize: screenWidth/20,
-                color: Colors.black87,
-                fontWeight: FontWeight.bold,
-              ),
-              autoStart: false,
-              isReverse: true,
-              onComplete: () {
-                setState(() {
-                  // countdown completes
-                });
-                _showGameOverPopup();
-              },
-            ),
+            widget.duration == 0
+                ? Container()
+                : CircularCountDownTimer(
+                    duration: widget.duration,
+                    controller: countDownController,
+                    width: screenWidth / 8,
+                    height: screenHeight / 15,
+                    ringColor: Colors.grey[300]!,
+                    fillColor: Colors.orangeAccent,
+                    backgroundColor: Colors.white54,
+                    textStyle: TextStyle(
+                      fontSize: screenWidth / 20,
+                      color: Colors.black87,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    autoStart: false,
+                    isReverse: true,
+                    onComplete: () {
+                      setState(() {
+                        // countdown completes
+                      });
+                      _showGameOverPopup();
+                    },
+                  ),
             Center(
               child: Column(
                 children: getWordRows(screenWidth),
@@ -90,16 +90,20 @@ class _GamePageState extends State<GamePage> {
                     keySize),
                 buildKeyboardRow(
                     ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'], keySize),
-                buildKeyboardRow(
-                    ['Z', 'X', 'C', 'V', 'B', 'N', 'M'], keySize),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    buildKeyboardRow(['Z', 'X', 'C', 'V', 'B', 'N', 'M'], keySize),
                     ActionButton(
-                      alphabet: "Delete",
+                      alphabet: "Del",
                       onTap: popAlphabet,
                       size: keySize,
                     ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
                     ActionButton(
                       alphabet: "Enter",
                       onTap: enterWord,
@@ -125,16 +129,14 @@ class _GamePageState extends State<GamePage> {
           color: Colors.white,
         ));
       }
-    }
-    else if (word.isEmpty) {
+    } else if (word.isEmpty) {
       for (int i = 0; i < 6; i++) {
         letterBoxes.add(LetterBox(
           letter: inputWord[i],
           color: const Color.fromARGB(150, 255, 255, 255),
         ));
       }
-    }
-    else {
+    } else {
       List<String> charList = widget.word.split('');
       for (int i = 0; i < 6; i++) {
         if (inputWord[i] == widget.word[i]) {
@@ -238,7 +240,10 @@ class _GamePageState extends State<GamePage> {
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        return GameWonPopUp(word: widget.word, duration: widget.duration,);
+        return GameWonPopUp(
+          word: widget.word,
+          duration: widget.duration,
+        );
       },
     );
   }
@@ -248,7 +253,10 @@ class _GamePageState extends State<GamePage> {
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        return GameOverPopUp(word: widget.word, duration: widget.duration,);
+        return GameOverPopUp(
+          word: widget.word,
+          duration: widget.duration,
+        );
       },
     );
   }

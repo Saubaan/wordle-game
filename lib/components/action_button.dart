@@ -20,7 +20,7 @@ class ActionButton extends StatelessWidget {
           decoration: BoxDecoration(
             color: Colors.yellow,
             borderRadius: BorderRadius.circular(size * 0.15),
-            border: Border.all(color: Colors.black, width: 2),
+            border: Border.all(color: Colors.orange, width: 2),
           ),
           child: Center(
             child: Text(
