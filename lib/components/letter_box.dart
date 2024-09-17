@@ -14,12 +14,13 @@ class LetterBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 4),
       child: Container(
         padding: const EdgeInsets.all(5),
-        height: 60,
-        width: 60,
+        height: screenWidth / 8,
+        width: screenWidth / 8,
         decoration: BoxDecoration(
           color: color,
           border: Border.all(width: 2, color: borderColor==null?Colors.grey.shade500:borderColor!),
