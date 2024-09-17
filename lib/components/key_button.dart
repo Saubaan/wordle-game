@@ -13,7 +13,7 @@ class KeyButton extends StatelessWidget {
       required this.pushAlphabet,
       required this.size,
       required this.isUsed,
-      required this.isCorrect});
+      required this.isCorrect,});
 
   @override
   Widget build(BuildContext context) {
@@ -43,11 +43,13 @@ class KeyButton extends StatelessWidget {
   }
 
   Color getKeyColor() {
-    if(isUsed && isCorrect){
-      return Colors.green;
-    }
-    else if(isUsed){
-      return Colors.grey.shade600;
+    if(isUsed){
+      if (isCorrect) {
+        return Colors.green;
+      }
+      else {
+        return Colors.grey.shade600;
+      }
     }
     else {
       return Colors.yellow;
