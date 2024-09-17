@@ -25,7 +25,7 @@ class KeyButton extends StatelessWidget {
         decoration: BoxDecoration(
           color: getKeyColor(),
           borderRadius: BorderRadius.circular(size * 0.15),
-          border: Border.all(color: Colors.black, width: 2),
+          border: Border.all(color: Colors.orange, width: 2),
         ),
         height: size,
         width: alphabet.length == 1 ? size : null,
