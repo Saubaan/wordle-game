@@ -6,10 +6,11 @@ import 'package:wordle/utils/words_list.dart';
 void main() {
   Random random = Random();
   String word = words[random.nextInt(words.length)].toUpperCase();
+  int duration = 60;
   runApp(
     MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: GamePage(word: word),
+      home: GamePage(word: word, duration: duration,),
     ),
   );
 }

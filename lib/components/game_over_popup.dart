@@ -8,10 +8,11 @@ import '../utils/words_list.dart';
 class GameOverPopUp extends StatelessWidget {
   const GameOverPopUp({
     super.key,
-    required this.word,
+    required this.word, required this.duration,
   });
 
   final String word;
+  final int duration;
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +59,7 @@ class GameOverPopUp extends StatelessWidget {
                     Navigator.pop(context);
                     Navigator.pop(context);
                     Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => GamePage(word: words[random.nextInt(words.length)].toUpperCase())));
+                        MaterialPageRoute(builder: (context) => GamePage(word: words[random.nextInt(words.length)].toUpperCase(), duration: duration,)));
                   },
                   child: Image(
                     image: const AssetImage('assets/components/play_again.png'),

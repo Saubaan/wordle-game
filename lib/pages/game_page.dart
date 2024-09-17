@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:flutter/material.dart';
 import 'package:wordle/components/action_button.dart';
 import 'package:wordle/components/game_over_popup.dart';
@@ -9,7 +10,9 @@ import 'package:wordle/components/key_button.dart';
 
 class GamePage extends StatefulWidget {
   final String word;
-  const GamePage({super.key, required this.word});
+  final int duration;
+
+  const GamePage({super.key, required this.word, required this.duration});
 
   @override
   State<GamePage> createState() => _GamePageState();
@@ -18,20 +21,32 @@ class GamePage extends StatefulWidget {
 class _GamePageState extends State<GamePage> {
   String inputWord = '';
   int currentRow = 0;
-  List<String> wordRows = ['', '', '', '', ''];
+  List<String> wordRows = ['', '', '', '', '', ''];
   Random random = Random();
   List<String> usedLetters = [];
+  final CountDownController countDownController = CountDownController();
+  bool isRunning = false;
   @override
+
+
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
     final keySize = screenWidth / 11.6;
+    if(inputWord.isNotEmpty && !isRunning){
+      countDownController.start();
+      isRunning = true;
+    }
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.orange.shade600,
         foregroundColor: Colors.white,
         centerTitle: true,
-        title: const Text("Wordle", style: TextStyle(fontFamily: 'RetroGame',fontSize: 30),),
+        title: const Text(
+          "Wordle",
+          style: TextStyle(fontFamily: 'RetroGame', fontSize: 30),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
@@ -40,8 +55,33 @@ class _GamePageState extends State<GamePage> {
           children: [
             // debug purpose text widget
             Text('${widget.word}  $inputWord'),
-            Column(
-              children: getWordRows(screenWidth),
+            // timer
+            CircularCountDownTimer(
+              duration: widget.duration,
+              controller: countDownController,
+              width: screenWidth / 8,
+              height: screenHeight /15,
+              ringColor: Colors.grey[300]!,
+              fillColor: Colors.orangeAccent,
+              backgroundColor: Colors.white54,
+              textStyle: TextStyle(
+                fontSize: screenWidth/20,
+                color: Colors.black87,
+                fontWeight: FontWeight.bold,
+              ),
+              autoStart: false,
+              isReverse: true,
+              onComplete: () {
+                setState(() {
+                  // countdown completes
+                });
+                _showGameOverPopup();
+              },
+            ),
+            Center(
+              child: Column(
+                children: getWordRows(screenWidth),
+              ),
             ),
             Column(
               children: [
@@ -50,15 +90,16 @@ class _GamePageState extends State<GamePage> {
                     keySize),
                 buildKeyboardRow(
                     ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'], keySize),
-                buildKeyboardRow(['Z', 'X', 'C', 'V', 'B', 'N', 'M'], keySize),
+                buildKeyboardRow(
+                    ['Z', 'X', 'C', 'V', 'B', 'N', 'M'], keySize),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     ActionButton(
-                    alphabet: "Delete",
-                    onTap: popAlphabet,
-                    size: keySize,
-                  ),
+                      alphabet: "Delete",
+                      onTap: popAlphabet,
+                      size: keySize,
+                    ),
                     ActionButton(
                       alphabet: "Enter",
                       onTap: enterWord,
@@ -84,60 +125,54 @@ class _GamePageState extends State<GamePage> {
           color: Colors.white,
         ));
       }
-      return Row(
-        children: letterBoxes,
-      );
-    } else if (word.isEmpty) {
+    }
+    else if (word.isEmpty) {
       for (int i = 0; i < 6; i++) {
         letterBoxes.add(LetterBox(
           letter: inputWord[i],
-          color: Colors.white,
+          color: const Color.fromARGB(150, 255, 255, 255),
         ));
       }
-      return Row(
-        children: letterBoxes,
-      );
-    } else {
+    }
+    else {
       List<String> charList = widget.word.split('');
       for (int i = 0; i < 6; i++) {
-        if(inputWord[i] == widget.word[i]) {
+        if (inputWord[i] == widget.word[i]) {
           charList.remove(inputWord[i]);
         }
       }
       for (int i = 0; i < 6; i++) {
-        if(inputWord[i] == widget.word[i]){
+        if (inputWord[i] == widget.word[i]) {
           letterBoxes.add(LetterBox(
             letter: inputWord[i],
             color: Colors.green,
           ));
-        }
-        else if(charList.contains(inputWord[i])){
+        } else if (charList.contains(inputWord[i])) {
           letterBoxes.add(LetterBox(
             letter: inputWord[i],
             color: Colors.orange,
           ));
           charList.remove(inputWord[i]);
-        }
-        else {
+        } else {
           letterBoxes.add(LetterBox(
             letter: inputWord[i],
-            color: Colors.grey,
+            color: const Color.fromARGB(205, 119, 119, 119),
           ));
         }
       }
     }
     return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: letterBoxes,
     );
   }
 
-  List<Widget> getWordRows(double screenWidth){
+  List<Widget> getWordRows(double screenWidth) {
     List<Widget> rows = [];
-    for(int i = 0; i < 5; i++){
-      if(currentRow == i){
+    for (int i = 0; i < wordRows.length; i++) {
+      if (currentRow == i) {
         rows.add(buildWordRow(inputWord, true, screenWidth));
-      }
-      else{
+      } else {
         rows.add(buildWordRow(wordRows[i], false, screenWidth));
       }
     }
@@ -180,16 +215,16 @@ class _GamePageState extends State<GamePage> {
   }
 
   void enterWord(double screenWidth) {
-    if(inputWord.length == 6 && currentRow < wordRows.length){
+    if (inputWord.length == 6 && currentRow < wordRows.length) {
       setState(() {
-        for(int i = 0; i<inputWord.length; i++){
+        for (int i = 0; i < inputWord.length; i++) {
           usedLetters.add(inputWord[i]);
         }
         wordRows[currentRow] = inputWord;
         currentRow++;
-        if(inputWord == widget.word){
+        if (inputWord == widget.word) {
           _showGameWonPopup();
-        } else if(currentRow>wordRows.length-1){
+        } else if (currentRow > wordRows.length - 1) {
           _showGameOverPopup();
         }
         inputWord = '';
@@ -198,11 +233,12 @@ class _GamePageState extends State<GamePage> {
   }
 
   void _showGameWonPopup() {
+    countDownController.pause();
     showDialog(
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        return GameWonPopUp(word: widget.word);
+        return GameWonPopUp(word: widget.word, duration: widget.duration,);
       },
     );
   }
@@ -212,7 +248,7 @@ class _GamePageState extends State<GamePage> {
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        return GameOverPopUp(word: widget.word);
+        return GameOverPopUp(word: widget.word, duration: widget.duration,);
       },
     );
   }
