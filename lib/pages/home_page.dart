@@ -15,8 +15,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<int> duration = [0, 300, 600, 900];
-  List<String> time = ['Off', '5 min', '10 min', '15 min'];
+  List<int> duration = [0, 60, 120, 300, 600, 900];
+  List<String> time = ['Off', '1 min', '2 min', '5 min', '10 min', '15 min'];
   int selection = 0;
   Random random = Random();
   @override
